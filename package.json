@@ -1,0 +1,8 @@
+{
+  "name": "math-game-grade1",
+  "type": "module",
+  "dependencies": {
+    "express": "^4.19.2",
+    "@google/genai": "^1.24.0"
+  }
+}
