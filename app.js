@@ -1,0 +1,1 @@
+function check(x){const r=document.getElementById('result');if(x===1){r.textContent='✅ أحسنت!';r.style.color='green';}else{r.textContent='❌ حاول مرة أخرى';r.style.color='red';}}
