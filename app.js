@@ -1,73 +1,60 @@
-/* =====================================
-   Math Game - Grade 1
-   app.js
-   ===================================== */
+// ✅ الجواب الصحيح (٣ = الخيار رقم 1)
+const correctAnswer = 1;
 
-/* ===== عناصر الصفحة ===== */
-const resultEl = document.getElementById("result");
-const geminiEl = document.getElementById("gemini");
+// ✅ دالة فحص الإجابة
+async function check(choice) {
+  const result = document.getElementById("result");
+  const geminiBox = document.getElementById("gemini");
 
-/* ===== عرض نتيجة الإجابة ===== */
-function showResult(isCorrect) {
-  if (isCorrect) {
-    resultEl.textContent = "✅ أحسنت!";
-    resultEl.style.color = "green";
+  if (choice === correctAnswer) {
+    result.textContent = "✅ إجابة صحيحة!";
+    result.style.color = "green";
+    await askGemini("الطالب أجاب بشكل صحيح على ٢ + ١ = ٣. شجعه بكلمات بسيطة ولطيفة لطفل صف أول.");
   } else {
-    resultEl.textContent = "❌ حاول مرة أخرى";
-    resultEl.style.color = "red";
+    result.textContent = "❌ حاول مرة أخرى";
+    result.style.color = "red";
+    await askGemini("الطالب أخطأ في ٢ + ١. شجعه بلطف دون توبيخ واطلب المحاولة مرة أخرى.");
   }
 }
 
-/* ===== التواصل مع Gemini (إن وُجد الخادم) ===== */
-async function askGemini(prompt) {
-  try {
-    const response = await fetch("/ask", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ prompt }),
-    });
+// ✅ استدعاء Gemini للتشجيع فقط
+async function askGemini(promptText) {
+  const geminiBox = document.getElementById("gemini");
+  geminiBox.textContent = "🤖 ...";
 
-    if (!response.ok) return null;
+  // ❗ ضع مفتاح Gemini هنا فقط
+  const API_KEY = "AIzaSyCA6OpfGaUqzL-fpt_IOI1WbstyXcgLJ5k";
+
+  try {
+    const response = await fetch(
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + API_KEY,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text:
+                    "التزم بما يلي:\n" +
+                    "- كلمات قصيرة\n" +
+                    "- تشجيع لطيف\n" +
+                    "- لا توبيخ\n" +
+                    "- لا شرح طويل\n\n" +
+                    promptText
+                }
+              ]
+            }
+          ]
+        })
+      }
+    );
 
     const data = await response.json();
-    return data.answer || null;
+    geminiBox.textContent =
+      data?.candidates?.[0]?.content?.parts?.[0]?.text || "🌱 أحسنت!";
   } catch (error) {
-    // في حال عدم وجود خادم أو انقطاع الاتصال
-    return null;
+    geminiBox.textContent = "🌱 أحسنت!";
   }
 }
-
-/* ===== التحقق من الإجابة =====
-   x = 1  → صحيحة
-   x ≠ 1 → خاطئة
-*/
-async function check(x) {
-  const isCorrect = x === 1;
-
-  showResult(isCorrect);
-
-  // تفريغ تعليق Gemini السابق
-  if (geminiEl) geminiEl.textContent = "";
-
-  // 👶 تعليق لطيف (اختياري وآمن)
-  let prompt;
-
-  if (isCorrect) {
-    prompt =
-      "شجع طفلًا عمره 6 سنوات بجملة قصيرة ولطيفة لأنه أجاب إجابة صحيحة في مسألة جمع بسيطة.";
-  } else {
-    prompt =
-      "شجع طفلًا عمره 6 سنوات بلطف وهدوء عندما يخطئ في مسألة جمع، بدون ذكر الخطأ بالتفصيل.";
-  }
-
-  const geminiMessage = await askGemini(prompt);
-
-  // عرض تعليق Gemini فقط إن وُجد
-  if (geminiMessage && geminiEl) {
-    geminiEl.textContent = geminiMessage;
-    geminiEl.style.color = "#444";
-  }
-}
-``
