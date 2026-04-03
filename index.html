@@ -4,20 +4,36 @@
   <meta charset="UTF-8" />
   <title>رياضيات الصف الأول – مدرسة عاطوف المختلطة</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- ملف التطبيق (PWA) -->
   <link rel="manifest" href="manifest.json" />
+
+  <!-- ملف التنسيق -->
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
   <div class="game">
     <h1>🎮 لعبة الرياضيات</h1>
+
+    <!-- السؤال -->
     <p id="question">٢ + ١ = ؟</p>
+
+    <!-- خيارات الإجابة -->
     <div class="choices">
       <button onclick="check(0)">٢</button>
       <button onclick="check(1)">٣</button>
       <button onclick="check(2)">٤</button>
     </div>
+
+    <!-- نتيجة الإجابة -->
     <p id="result"></p>
+
+    <!-- ✅ تعليق Gemini (تشجيع ذكي لطيف) -->
+    <p id="gemini"></p>
   </div>
+
+  <!-- ملف JavaScript -->
   <script src="app.js" defer></script>
 </body>
 </html>
